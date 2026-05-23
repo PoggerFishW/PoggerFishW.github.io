@@ -1,0 +1,23 @@
+(async() => {
+	let endpoint = "/b6.php"
+	if (active_page === "index" || active_page === "catalog") {
+		endpoint += "?new-thread=1"
+	}
+
+	const checkCaptcha = async() => { fetch(endpoint).then((r) => {
+		const captcha = document.querySelector(".mccaptcha-container")
+		if (r.status == 401) {
+			captcha.hidden = false
+		} else {
+			captcha.hidden = true
+		}
+	})}
+
+	await checkCaptcha()
+	$(document).on('ajax_before_post', async() => {
+		await checkCaptcha()
+	})
+	$(document).on('ajax_after_post', async() => {
+		await checkCaptcha()
+	})
+})()
